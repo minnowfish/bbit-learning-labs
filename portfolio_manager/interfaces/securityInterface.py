@@ -12,14 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+import sys
+module_path = os.path.abspath('..')
+if module_path not in sys.path:
+    sys.path.append(module_path)
+
 #Security Class Interface
 class securityInterface():
     def __init__(self, name: str) -> None:
-        pass
+        self.name = name
+
+    def __str__(self):
+        return "Security: " + self.name
     
     #Return the security's name
     def getName(self) -> str:
-        return "Implement Me!"
+        return self.name
 
     #Return the current security's market value
     def getCurrentMarketValue(self) -> float:
