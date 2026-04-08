@@ -12,21 +12,42 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+import sys
+module_path = os.path.abspath('..')
+if module_path not in sys.path:
+    sys.path.append(module_path)
+
+from implementations.securitySolution import security
+
 #Position Class Interface. 
 from .securityInterface import securityInterface
 class positionInterface():
-    def __init__(self, security, initialPosition: int) -> None:
-        pass
+    def __init__(self, securityIn, initialPosition: int) -> None:
+        self.initialPosition = initialPosition
+        self.positionValue = initialPosition
+
+        if isinstance(securityIn, securityInterface):
+            self.security = securityIn
+        else:
+            self.security = security(securityIn)
+
+    def __str__(self):
+        return f"{self.security}, Position: {self.positionValue}"
     
     def getSecurity(self) -> securityInterface:
-        pass
+        return self.security
 
     def getPosition(self) -> int:
-        pass
+        return self.positionValue
     
     def setPosition(self, inputValue: int) -> None:
-        pass
+        if inputValue < 0:
+            raise Exception("Position should be a long!")
+        self.positionValue = inputValue
     
     #Add an integer amount to the current position.
     def addPosition(self, inputValue: int) -> None:
-        pass
+        if position + inputValue < 0:
+            raise Exception("position will be a short if value is added!")
+        self.positionValue += inputValue
