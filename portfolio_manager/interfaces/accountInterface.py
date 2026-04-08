@@ -13,27 +13,53 @@
 # limitations under the License.
 
 from .positionInterface import positionInterface
+from .securityInterface import securityInterface
 from typing import Any, Dict, Set, Iterable
+import copy 
 class accountInterface():
     def __init__(self, positions: Set[positionInterface], accountName: str) -> None:
-        pass
+        self.positions = {posItem.getSecurity().getName(): posItem for posItem in positions}
+        self.accountName = accountName
+
+    def __str__(self):
+        return self.accountName
 
     #Return the account's name
     def getName(self) -> str:
-        pass
+        return self.accountName
 
     #Return all positions currently within the account
     def getAllPositions(self) -> Iterable[positionInterface]:
-        pass
+        return list(self.positions.values())
 
     #Return all positions that contain a security in a given input set
-    def getPositions(self, securities: Set) -> Dict[Any, positionInterface]:
-        pass
+    def getPositions(self, securities: Set) -> Dict[str, positionInterface]:
+        securityToPos = {}
+
+        for security in securities:
+            if isinstance(security, securityInterface):
+                name = security.getName()
+            else:
+                name = security
+            
+            if name in self.positions:
+                securityToPos[security] = self.positions[name]
+
+        return securityToPos 
 
     #Add positions to the account
     def addPositions(self, positions: Set[positionInterface]) -> None:
-        pass
+        for pos in positions:
+            if pos.getSecurity().getName() in self.positions:
+                self.positions[pos.getSecurity().getName()].setPosition(pos.getPosition())
+            else:
+                self.positions[pos.getSecurity().getName()] = pos
     
     #Remove a number of positions from this account if they represent a security in a given input set
     def removePositions(self, securities: Set) -> None:
-        pass
+        for security in securities:
+            if isinstance(security, securityInterface):
+                self.positions.pop(security.name)
+            else:
+                self.positions.pop(security)
+
